@@ -1,0 +1,31 @@
+# First stage: Build the application
+# Update the Rust image to the required version
+FROM rust:latest as builder
+
+# Create a working directory
+WORKDIR /usr/src/app
+
+# Copy over your source code
+COPY ./ /usr/src/app
+
+# Build your application
+RUN cargo build --release
+
+# Second stage: Setup the runtime environment
+# Use a minimal Debian image to reduce size
+FROM debian:buster-slim
+
+# Install SSL certificates and SQLite3
+RUN apt-get update && \
+    apt-get install -y libssl-dev ca-certificates sqlite3 libsqlite3-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy the build artifact from the build stage
+COPY --from=builder /usr/src/app/target/release/app /usr/local/bin/app
+
+# Adjust the path to where your app expects to find the database file.
+# Ensure the database file exists or this step will fail.
+COPY --from=builder /usr/src/app/your_database.db /usr/local/bin/your_database.db
+
+# Set the default command to run your binary
+CMD ["app"]
