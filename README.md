@@ -8,6 +8,8 @@
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
+    - [Non-Docker](#non-docker)
+    - [Docker](#docker)
 - [Usage](#usage)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
@@ -43,33 +45,91 @@ Before installing Data Drake, ensure that you have the following dependencies in
 You can check if you have these dependencies installed by running `node -v`, `npm -v`, `yarn -v`, and `rustc --version` in your terminal.
 
 ### Installation
-1. Clone the repository to your local machine:
+
+#### Non-Docker
+
+1. Add `DATA_DRAKE_AUTH_TOKEN` to your system environment variables and generate a secure string for the value.
+
+2. Navigate to the `backend` directory and bring it up with the following command:
+
    ```bash
-   git clone https://github.com/your-username/data-drake.git
+   cd backend
+   cargo run
    ```
 
-2. Navigate into the project directory:
+3. Navigate to the `frontend` directory:
+
    ```bash
-   cd data-drake
+   cd ../frontend
    ```
 
-3. Install the dependencies:
-   ```bash
-   npm install
+4. Create a `.env` file within the `frontend` directory and add the following variables:
+
+   ```
+   DATA_DRAKE_AUTH_TOKEN=your_auth_token_value
+   DATA_DRAKE_SERVER_URI=http://localhost:8000
    ```
 
-4. Build the Rust backend:
+   Replace `your_auth_token_value` with the secure string you generated for `DATA_DRAKE_AUTH_TOKEN` and update `DATA_DRAKE_SERVER_URI` with the URI where your server is running.
+
+5. Build the frontend with the following command:
+
    ```bash
-   cargo build --release
+   npm run build
    ```
 
-5. Start the development server:
+6. Run the frontend with the following command:
+
    ```bash
-   npm dev
+   npm run preview
    ```
 
-6. Open your browser and go to [http://localhost:3000](http://localhost:3000) to view Data Drake in action.
+#### Docker
 
+1. Navigate to the `frontend` directory:
+
+   ```bash
+   cd frontend
+   ```
+
+2. Create a `.env` file within the `frontend` directory and add the following variables:
+
+   ```
+   DATA_DRAKE_AUTH_TOKEN=your_auth_token_value
+   DATA_DRAKE_SERVER_URI=http://backend:8000
+   ```
+
+   Replace `your_auth_token_value` with the secure string you generated for `DATA_DRAKE_AUTH_TOKEN`. Note that the `DATA_DRAKE_SERVER_URI` should use the service name `backend` as defined in the Docker Compose file.
+
+3. Open the `docker-compose.yml` file in the project root directory.
+
+4. In the `backend` service section, add the following volume mount to specify the desired directories for scanning:
+
+   ```yaml
+   services:
+     backend:
+       ...
+       volumes:
+         - /path/to/scan/directory:/app/scanned_data
+   ```
+
+   Replace `/path/to/scan/directory` with the actual path to the directory you want to scan.
+
+5. Build the project with the following command:
+
+   ```bash
+   docker compose build
+   ```
+
+6. Run the project with the following command:
+
+   ```bash
+   docker compose up
+   ```
+
+   This will start both the backend and frontend services defined in the Docker Compose file.
+
+Make sure you have Docker and Docker Compose installed on your machine before running the Docker-specific commands.
 ## Usage
 
 Once you have Data Drake up and running, you can start scanning directories and analyzing disk usage. Simply select the directory you want to scan, choose the desired scanning granularity, and let Data Drake do the rest. The results will be persistently stored, allowing you to access them later and track changes over time.
