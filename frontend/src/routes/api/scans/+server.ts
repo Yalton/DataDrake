@@ -1,12 +1,12 @@
-// scans/+page.server.ts
+// scans/+server.ts
 import type { RequestHandler } from '@sveltejs/kit';
 import axios from 'axios';
-import { DATA_DRAKE_AUTH_TOKEN } from '$env/static/private';
+import { DATA_DRAKE_AUTH_TOKEN, BACKEND_URI } from '$env/static/private';
 
 export const GET: RequestHandler = async () => {
   try {
-    console.log(DATA_DRAKE_AUTH_TOKEN)
-    const response = await axios.get('http://127.0.0.1:8000/get_root_paths', {
+    //console.log(DATA_DRAKE_AUTH_TOKEN)
+    const response = await axios.get(`${BACKEND_URI}/get_root_paths`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': DATA_DRAKE_AUTH_TOKEN,
@@ -35,8 +35,8 @@ export const POST: RequestHandler = async ({ request }) => {
     const data = await request.json();
     const directory = data.path;
 
-    console.log(DATA_DRAKE_AUTH_TOKEN)
-    const response = await axios.post('http://127.0.0.1:8000/scan_directory', { path: directory }, {
+    //console.log(DATA_DRAKE_AUTH_TOKEN)
+    const response = await axios.post(`${BACKEND_URI}/scan_directory`, { path: directory }, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': DATA_DRAKE_AUTH_TOKEN,
@@ -64,11 +64,11 @@ export const POST: RequestHandler = async ({ request }) => {
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
     const data = await request.json();
-    console.log(data)
+    //console.log(data)
     const directory = data.path;
 
-    console.log(DATA_DRAKE_AUTH_TOKEN);
-    const response = await axios.delete('http://127.0.0.1:8000/delete_scan', {
+    //console.log(DATA_DRAKE_AUTH_TOKEN);
+    const response = await axios.delete(`${BACKEND_URI}/delete_scan`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': DATA_DRAKE_AUTH_TOKEN,

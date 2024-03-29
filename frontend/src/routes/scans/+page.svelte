@@ -3,15 +3,15 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Toast from '$lib/components/Toast.svelte';
-	import {decodeBase64, encodeBase64} from '$lib/utils/base64'
+	import { decodeBase64, encodeBase64 } from '$lib/utils/base64';
 	let data: string[] = [];
 	let selectedDirectory: string = '';
 	let toastMessage: string = '';
 	let toastType: 'success' | 'error' | 'info' | 'warning' = 'info';
 
-	onMount(async () => {
+	async function fetchScanData() {
 		try {
-			const response = await fetch('/scans');
+			const response = await fetch('/api/scans');
 			if (response.ok) {
 				data = await response.json();
 				console.log(data);
@@ -22,11 +22,16 @@
 			console.error('Error fetching data:', error);
 			showToast('Error fetching data', 'error');
 		}
+	}
+
+	onMount(async () => {
+		await fetchScanData();
 	});
 
 	async function handleSubmit() {
+		//console.log(selectedDirectory)
 		try {
-			const response = await fetch('/scans', {
+			const response = await fetch('/api/scans', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -36,7 +41,7 @@
 
 			if (response.ok) {
 				let message = await response.json();
-				console.log(message.job_id);
+				//console.log(message.job_id);
 				showToast(`Scan Job create with ID: ${message.job_id}`, 'success');
 				// Optionally, you can refresh the data after a successful POST request
 				// const updatedData = await response.json();
@@ -52,7 +57,7 @@
 
 	async function handleDelete(directory: string) {
 		try {
-			const response = await fetch('/scans', {
+			const response = await fetch('/api/scans', {
 				method: 'DELETE',
 				headers: {
 					'Content-Type': 'application/json'
@@ -94,16 +99,20 @@
 	<hr class="mb-4 border-gray-300" />
 	<h2 class="text-3xl font-bold mb-4 text-gray-800">Scan new Directory</h2>
 
-	<form class="mb-4 flex space-x-2" on:submit|preventDefault={handleSubmit}>
+	<form class="mb-4 flex space-x-2">
 		<input
 			type="text"
 			bind:value={selectedDirectory}
 			placeholder="Enter directory path"
 			class="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-500 focus:border-blue-500"
 		/>
-		<button type="submit" class="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-			>Scan Directory</button
+		<button
+			type="button"
+			on:click={handleSubmit}
+			class="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
 		>
+			Scan Directory
+		</button>
 	</form>
 
 	{#if data.length > 0}

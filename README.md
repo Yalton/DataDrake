@@ -55,7 +55,7 @@ You can check if you have these dependencies installed by running `node -v`, `np
 
 3. Install the dependencies:
    ```bash
-   yarn install
+   npm install
    ```
 
 4. Build the Rust backend:
@@ -65,7 +65,7 @@ You can check if you have these dependencies installed by running `node -v`, `np
 
 5. Start the development server:
    ```bash
-   yarn dev
+   npm dev
    ```
 
 6. Open your browser and go to [http://localhost:3000](http://localhost:3000) to view Data Drake in action.

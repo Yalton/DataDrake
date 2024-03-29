@@ -14,18 +14,18 @@
 	let fileTree: FileNode[] = [];
 	let path: string | null;
 	onMount(async () => {
-		console.log('Loading scans');
+		//console.log('Loading scans');
 
 		try {
 			path = $page.url.searchParams.get('path');
 			const encodedPath = path ? encodeURIComponent(path) : '';
-			const response = await fetch(`/scans/report?path=${encodedPath}`);
+			const response = await fetch(`/api/scans/report?path=${encodedPath}`);
 
 			if (response.ok) {
 				data = await response.json();
-				console.log(data);
+				//console.log(data);
 				fileTree = buildFileTree(data, path || '');
-				console.log(fileTree);
+				//console.log(fileTree);
 			} else {
 				throw new Error('Error fetching data');
 			}
@@ -45,7 +45,7 @@
 	<meta name="description" content="List of scans" />
 </svelte:head>
 
-<div class="p-6 max-w-sm mx-auto bg-white rounded-xl shadow-md flex flex-col items-center space-x-4">
+<div class="p-6 mx-auto bg-white rounded-xl shadow-md flex flex-col items-center space-x-4">
 	<h1 class="text-3xl font-bold text-gray-800">Scan Results for</h1>
 	<h2 class="text-2xl font-bold text-gray-800">{decodeBase64(path)}</h2>
 </div>

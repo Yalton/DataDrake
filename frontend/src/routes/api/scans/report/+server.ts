@@ -1,14 +1,14 @@
 // scans/report/+page.server.ts
 import type { RequestHandler } from '@sveltejs/kit';
 import axios from 'axios';
-import { DATA_DRAKE_AUTH_TOKEN } from '$env/static/private';
+import { DATA_DRAKE_AUTH_TOKEN, BACKEND_URI} from '$env/static/private';
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const path = url.searchParams.get('path');
 
-    console.log(DATA_DRAKE_AUTH_TOKEN);
-    const response = await axios.post('http://127.0.0.1:8000/get_scan', { path }, {
+    //console.log(DATA_DRAKE_AUTH_TOKEN);
+    const response = await axios.post(`${BACKEND_URI}/get_scan`, { path }, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': DATA_DRAKE_AUTH_TOKEN,
