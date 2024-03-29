@@ -20,13 +20,6 @@
 						<img src={logo} width="60" height="60" alt="SvelteKit" />
 					</a>
 				</li>
-				<li aria-current={$page.url.pathname === '/about' ? 'page' : undefined} class="h-full">
-					<a
-						href="/about"
-						class="flex items-center h-full px-2 text-sm font-bold uppercase tracking-wider no-underline transition-colors duration-200 ease-linear text-black hover:text-theme-1"
-						>About</a
-					>
-				</li>
 				<li aria-current={$page.url.pathname === '/scans' ? 'page' : undefined} class="h-full">
 					<a
 						href="/scans"
