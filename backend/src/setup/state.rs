@@ -14,7 +14,7 @@ pub struct State {
 impl State {
     pub async fn new(_args: &Args) -> anyhow::Result<Self> {
         let scan_service = ScanService::new();
-        let database = DatabaseService::connect("sqlite:dir_scans.db").await?;
+        let database = DatabaseService::connect("sqlite:database/dir_scans.db").await?;
         let job_service = JobService::new();
 
 

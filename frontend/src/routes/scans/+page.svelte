@@ -2,34 +2,40 @@
 
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Toast from '$lib/components/Toast.svelte';
+	import { Jumper } from 'svelte-loading-spinners';
 	import { decodeBase64, encodeBase64 } from '$lib/utils/base64';
+	import Toast from '$lib/components/Toast.svelte';
+
 	let data: string[] = [];
 	let selectedDirectory: string = '';
 	let toastMessage: string = '';
 	let toastType: 'success' | 'error' | 'info' | 'warning' = 'info';
+	let scanDataPromise: Promise<string[]>;
 
-	async function fetchScanData() {
+	async function fetchScanData(): Promise<string[]> {
 		try {
 			const response = await fetch('/api/scans');
 			if (response.ok) {
-				data = await response.json();
-				console.log(data);
+				const data = await response.json();
+				// //console.log(data);
+				showToast('Scans Fetched', 'info');
+				return data;
 			} else {
 				throw new Error('Error fetching data');
 			}
 		} catch (error) {
 			console.error('Error fetching data:', error);
 			showToast('Error fetching data', 'error');
+			throw error;
 		}
 	}
 
 	onMount(async () => {
-		await fetchScanData();
+		scanDataPromise = fetchScanData();
 	});
 
 	async function handleSubmit() {
-		//console.log(selectedDirectory)
+		////console.log(selectedDirectory)
 		try {
 			const response = await fetch('/api/scans', {
 				method: 'POST',
@@ -41,7 +47,7 @@
 
 			if (response.ok) {
 				let message = await response.json();
-				//console.log(message.job_id);
+				////console.log(message.job_id);
 				showToast(`Scan Job create with ID: ${message.job_id}`, 'success');
 				// Optionally, you can refresh the data after a successful POST request
 				// const updatedData = await response.json();
@@ -114,45 +120,53 @@
 			Scan Directory
 		</button>
 	</form>
-
-	{#if data.length > 0}
-		<h2 class="text-3xl font-bold mb-4 text-gray-800">Scans List</h2>
-		<p class="mb-4 text-gray-600">
-			Creating a new scan of an existing directory will overwrite a previous one
-		</p>
-		<p class="mb-4 text-gray-600">
-			<a href="/jobs" class="underline decoration-blue-500">Check the Jobs Page</a> to see the status
-			of a ScanJob
-		</p>
-
-		<div class="flex items-center space-x-2 mb-4">
-			<span class="font-bold text-gray-800">🗑:</span>
-			<p class="text-gray-600">Delete Scan Data</p>
+	{#await scanDataPromise}
+	<h2 class="text-2xl font-bold mb-4 text-gray-800 flex items-center justify-center">Loading Scans...</h2>
+		<div class="flex items-center justify-center">
+			<Jumper size="60" color="#2196f3" unit="px" duration="1s" />
 		</div>
-		<hr class="mb-4 border-gray-300" />
-		<ul class="mb-4 list-disc pl-6 space-y-2 text-gray-600">
-			{#each data as currentScan}
-				<li class="flex items-center justify-between">
-					<a
-						href="/scans/report?path={encodeURIComponent(currentScan)}"
-						class="block mb-2 text-gray-600 hover:text-gray-800 underline decoration-blue-500"
-						>{decodeBase64(currentScan)}</a
-					>
-					<button
-						on:click={() => handleDelete(currentScan)}
-						class=" text-red-500 hover:text-red-600"
-					>
-						<span>🗑</span>
-					</button>
-				</li>
-			{/each}
-		</ul>
-	{:else}
-		<div class="mb-4">
-			<h2 class="text-3xl font-bold mb-4 text-gray-800">No Scans exist</h2>
-			<p class="text-gray-600">Get Scanning!</p>
-		</div>
-	{/if}
+	{:then data}
+		{#if data}
+			<h2 class="text-3xl font-bold mb-4 text-gray-800">Scans List</h2>
+			<p class="mb-4 text-gray-600">
+				Creating a new scan of an existing directory will overwrite a previous one
+			</p>
+			<p class="mb-4 text-gray-600">
+				<a href="/jobs" class="underline decoration-blue-500">Check the Jobs Page</a> to see the status
+				of a ScanJob
+			</p>
+
+			<div class="flex items-center space-x-2 mb-4">
+				<span class="font-bold text-gray-800">🗑:</span>
+				<p class="text-gray-600">Delete Scan Data</p>
+			</div>
+			<hr class="mb-4 border-gray-300" />
+			<ul class="mb-4 list-disc pl-6 space-y-2 text-gray-600">
+				{#each data as currentScan}
+					<li class="flex items-center justify-between">
+						<a
+							href="/scans/report?path={encodeURIComponent(currentScan)}"
+							class="block mb-2 text-gray-600 hover:text-gray-800 underline decoration-blue-500"
+							>{decodeBase64(currentScan)}</a
+						>
+						<button
+							on:click={() => handleDelete(currentScan)}
+							class=" text-red-500 hover:text-red-600"
+						>
+							<span>🗑</span>
+						</button>
+					</li>
+				{/each}
+			</ul>
+		{:else}
+			<div class="mb-4">
+				<h2 class="text-3xl font-bold mb-4 text-gray-800">No Scans exist</h2>
+				<p class="text-gray-600">Get Scanning!</p>
+			</div>
+		{/if}
+	{:catch error}
+		<p>Error loading scan data: {error.message}</p>
+	{/await}
 </div>
 
 <Toast message={toastMessage} type={toastType} />

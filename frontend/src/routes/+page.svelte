@@ -17,6 +17,9 @@
     <p class="mb-4 text-gray-700">
         Data Drake is an application designed to provide persistent, on-demand file indexing with the added benefit of persistent storage. Inspired by GNOME Disk Utility, Data Drake enables you to scan directories and determine what's taking up space with customizable granularity. The app leverages Sveltekit for the frontend and Rust for the backend, offering fast and efficient performance across platforms.
     </p>
+    <p class="mb-4 text-gray-700">
+        Written in rust, so filescans are very quick, but for massive directories with deep subdirectory structures it might take a bit.
+    </p>
     <h2 class="text-2xl font-semibold mb-4 text-gray-800">Features</h2>
     <ul style="list-style-type: disc;">
         <li>

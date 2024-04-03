@@ -1,18 +1,19 @@
-//endpoint/interface
-
 use axum::extract::{Json, State};
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use chrono::Utc;
 use serde_json::json;
 use std::fs;
-
 use crate::endpoint::jobs::*;
 use crate::endpoint::structs::*;
 use crate::endpoint::Error;
 use crate::endpoint::Result;
 use crate::services::*;
 use uuid::Uuid;
+use futures::stream::{self, StreamExt};
+use serde::Serialize;
+use tokio_util::codec::{BytesCodec, FramedRead};
+use futures::TryStreamExt;
 
 //curl -X POST -H "Content-Type: application/json" -d '{"path": "DIRECTORY"}' http://0.0.0.0:8000/scan_directory
 #[tracing::instrument(skip_all)]
@@ -92,7 +93,34 @@ pub async fn get_all_scans_by_root_path(
     Json(_json): Json<PathRequest>,
 ) -> Result<impl IntoResponse> {
     match _db.fetch_scans_by_root_directory(&_json.path).await {
-        Ok(scans) => Ok((StatusCode::OK, Json(scans))),
+        Ok(scans) => {
+            let stream = stream::iter(scans)
+                .map(|scan| serde_json::to_vec(&scan))
+                .map(|result| {
+                    result.map_err(|e| {
+                        std::io::Error::new(std::io::ErrorKind::Other, e.to_string())
+                    })
+                })
+                .map(|chunk| chunk.map(axum::body::Bytes::from))
+                .map(|chunk| {
+                    chunk.map(|bytes| {
+                        let mut buffer = bytes.to_vec();
+                        buffer.push(b'\n');
+                        axum::body::Bytes::from(buffer)
+                    })
+                })
+                .map_err(|e| e);
+
+            let body = axum::body::StreamBody::new(stream);
+
+            Ok((
+                StatusCode::OK,
+                axum::response::Response::builder()
+                    .header("Content-Type", "application/json")
+                    .body(body)
+                    .unwrap(),
+            ))
+        }
         Err(e) => {
             tracing::error!("Failed to fetch scans by root path: {}", e);
             Err(Error::new("Failed to fetch scans by root path").with_status(StatusCode::INTERNAL_SERVER_ERROR))

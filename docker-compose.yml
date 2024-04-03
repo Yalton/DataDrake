@@ -10,7 +10,8 @@ services:
     environment:
       - DATA_DRAKE_AUTH_TOKEN=DATA_DRAKE_AUTH_TOKEN
     restart: unless-stopped
-
+    volumes: 
+      - ./database:/app/backend
   frontend:
     build:
       context: ./frontend

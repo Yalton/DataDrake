@@ -11,3 +11,4 @@ platform_creds/credentials.ini
 platform_creds/youtube_creds.json
 *.log
 dir_scans.db
+database/dir_scans.db
