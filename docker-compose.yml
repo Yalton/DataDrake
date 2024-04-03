@@ -5,21 +5,25 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.backend
-    ports: 
-      - 8000:8000    
+    ports:
+      - 8000:8000
     environment:
-      - DATA_DRAKE_AUTH_TOKEN=DATA_DRAKE_AUTH_TOKEN
+      - DATA_DRAKE_AUTH_TOKEN=vWgDnAdwNUhgtHgDDlinphDaz
+    volumes:
+      - /opt/datahoard:/mnt/datahoard
+      - /opt/proxmox:/mnt/proxmox
+      - /opt/plex/data:/mnt/plex
+      - /opt/Pyload:/mnt/pyload
+      - /opt/syncthing/data/yalt:/mnt/yalt
+      - /opt/transmission/data:/mnt/transmission
+#      - /opt/DataDrake/persistence:/app/backend
     restart: unless-stopped
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile.frontend
-    network_mode: host 
+    network_mode: host
     # ports: 
     #   - 4173:4173  
     restart: unless-stopped
-
-# networks:
-#   zoomerfuel_network:
-#     driver: bridge

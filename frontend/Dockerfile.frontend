@@ -30,7 +30,8 @@ RUN npm run build
 EXPOSE 4173
 
 # Start the app with npm run preview
-CMD ["npm", "run", "preview"]
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0"]
+#CMD ["npm", "run", "preview", "--host", "0.0.0.0"]
 
 # # Use the official Node.js 18 as a base image
 # FROM node:18-alpine as build-stage
