@@ -51,26 +51,6 @@ pub async fn scan_directory(
     Ok((StatusCode::ACCEPTED, Json(json!({ "job_id": job_id }))))
 }
 
-//curl -X GET http://0.0.0.0:8000/get_job_status?id=10aa539c-56be-4b51-baae-e8707dd64aff
-// #[tracing::instrument(skip_all)]
-// pub async fn get_job_status(
-//     State(job_service): State<JobService>,
-//     Query(params): Query<ContentQuery>,
-// ) -> Result<(StatusCode, axum::Json<String>)> {
-
-//     let job_id = params.id.clone();
-//     tracing::info!("Getting status of Job with ID {}", job_id);
-//     let queue = job_service.job_queue.lock().unwrap();
-//     let job = queue.get(&job_id).cloned();
-
-//     match job {
-//         Some(job) => {
-//             let json_string = serde_json::to_string(&job).unwrap();
-//             Ok((StatusCode::OK, Json(json_string)))
-//         }
-//         None => Err(Error::new("Job not found").with_status(StatusCode::NOT_FOUND)),
-//     }
-// }
 
 #[tracing::instrument(skip_all)]
 pub async fn get_all_jobs(

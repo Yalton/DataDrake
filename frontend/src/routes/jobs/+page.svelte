@@ -12,14 +12,14 @@
 	let jobs: Job[] = [];
 
 	onMount(async () => {
-		////console.log('Loading Jobs');
+		//console.log('Loading Jobs');
 		try {
 			const response = await fetch('/api/jobs');
 			if (response.ok) {
 				jobs = await response.json();
 				showToast('Jobs Fetched', 'info');
 
-				////console.log(jobs);
+				//console.log(jobs);
 			} else {
 				throw new Error('Error fetching jobs');
 			}

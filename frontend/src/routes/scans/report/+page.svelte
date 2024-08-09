@@ -23,11 +23,12 @@
 			path = $page.url.searchParams.get('path');
 			const encodedPath = path ? encodeURIComponent(path) : '';
 			const response = await fetch(`/api/scans/report?path=${encodedPath}`);
-
+			console.log(response)
 			if (response.ok && response.body) {
 				const reader = response.body.getReader();
 				const decoder = new TextDecoder('utf-8');
 				let buffer = '';
+				console.log("Parsing Response")
 
 				while (true) {
 					const { done, value } = await reader.read();
@@ -48,7 +49,7 @@
 						}
 					}
 				}
-
+				console.log("Building filetree")
 				fileTree = buildFileTree(data, path || '');
 				showToast('Scan Report Fetched', 'info');
 			} else {

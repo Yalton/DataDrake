@@ -17,7 +17,7 @@
 			const response = await fetch('/api/scans');
 			if (response.ok) {
 				const data = await response.json();
-				// //console.log(data);
+				console.log(data);
 				showToast('Scans Fetched', 'info');
 				return data;
 			} else {
@@ -35,7 +35,7 @@
 	});
 
 	async function handleSubmit() {
-		////console.log(selectedDirectory)
+		//console.log(selectedDirectory)
 		try {
 			const response = await fetch('/api/scans', {
 				method: 'POST',
@@ -47,7 +47,7 @@
 
 			if (response.ok) {
 				let message = await response.json();
-				////console.log(message.job_id);
+				//console.log(message.job_id);
 				showToast(`Scan Job create with ID: ${message.job_id}`, 'success');
 				// Optionally, you can refresh the data after a successful POST request
 				// const updatedData = await response.json();

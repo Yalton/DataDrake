@@ -1,2 +1,3 @@
 .vscode
 .svelte-kit
+database/dir_scans.db

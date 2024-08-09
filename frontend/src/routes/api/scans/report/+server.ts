@@ -7,7 +7,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const path = url.searchParams.get('path');
 
-    ////console.log(DATA_DRAKE_AUTH_TOKEN);
+    //console.log(DATA_DRAKE_AUTH_TOKEN);
     const response = await axios.post(`${BACKEND_URI}/get_scan`, { path }, {
       headers: {
         'Content-Type': 'application/json',
@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       responseType: 'stream',
     });
-    // //console.log(response.data)
+    // console.log(response.data)
     return new Response(response.data, {
       status: 200,
       headers: {

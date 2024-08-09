@@ -8,10 +8,10 @@ services:
     ports: 
       - 8000:8000    
     environment:
-      - DATA_DRAKE_AUTH_TOKEN=DATA_DRAKE_AUTH_TOKEN
+      - DATA_DRAKE_AUTH_TOKEN=ZzIJzFieGiBXwFgsiNYknNLbGJVDsQ
     restart: unless-stopped
     volumes: 
-      - ./database:/app/backend
+      - ./database:/app/backend/database
   frontend:
     build:
       context: ./frontend

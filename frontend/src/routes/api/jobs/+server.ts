@@ -15,8 +15,8 @@ export const GET: RequestHandler = async () => {
         });
 
         jobs = JSON.parse(response.data);
-        ////console.log(jobs);
-        ////console.log("Array.isArray(jobs)", Array.isArray(jobs));
+        //console.log(jobs);
+        //console.log("Array.isArray(jobs)", Array.isArray(jobs));
 
         jobs.sort((a, b) => {
             return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
