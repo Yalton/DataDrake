@@ -3,23 +3,40 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { Job } from '$lib/types';
+	import Toast from '$lib/components/Toast.svelte';
+
+
+	let toastMessage: string = '';
+	let toastType: 'success' | 'error' | 'info' | 'warning' = 'info';
 
 	let jobs: Job[] = [];
 
 	onMount(async () => {
-		//console.log('Loading Jobs');
+		////console.log('Loading Jobs');
 		try {
 			const response = await fetch('/api/jobs');
 			if (response.ok) {
 				jobs = await response.json();
-				//console.log(jobs);
+				showToast('Jobs Fetched', 'info');
+
+				////console.log(jobs);
 			} else {
 				throw new Error('Error fetching jobs');
 			}
 		} catch (error) {
 			console.error('Error fetching jobs:', error);
+			showToast('Error fetching Jobs', 'error');
+
 		}
 	});
+	function showToast(message: string, type: 'success' | 'error' | 'info' | 'warning') {
+		toastMessage = message;
+		toastType = type;
+
+		setTimeout(() => {
+			toastMessage = '';
+		}, 3000);
+	}
 </script>
 
 <svelte:head>
@@ -52,3 +69,4 @@
 		</tbody>
 	</table>
 </div>
+<Toast message={toastMessage} type={toastType} />

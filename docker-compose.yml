@@ -13,11 +13,13 @@ services:
       - /opt/datahoard:/mnt/datahoard
       - /opt/proxmox:/mnt/proxmox
       - /opt/plex/data:/mnt/plex
-      - /opt/Pyload:/mnt/pyload
+      - /opt/pyload:/mnt/pyload
       - /opt/syncthing/data/yalt:/mnt/yalt
       - /opt/transmission/data:/mnt/transmission
+      - ./database:/app/backend/database
 #      - /opt/DataDrake/persistence:/app/backend
     restart: unless-stopped
+ 
 
   frontend:
     build:
